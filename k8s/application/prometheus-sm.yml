@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: sabinolabs-app
+  namespace: sabino-labs
+  labels:
+    team: sabino-labs
+spec:
+  selector:
+    matchLabels:
+      app: sabinolabs
+  endpoints:
+    - port: web
+      path: /prometheusMetrics

@@ -1,0 +1,19 @@
+commonLabels:
+  app.kubernetes.io/genereted-by: SabinoLabs
+
+namespace: sabino-labs
+
+resources:
+  - k8s/application/namespace.yml
+  # Individual apps
+  - k8s/application/deployment.yml
+  - k8s/application/service.yml
+  - k8s/application/postgresql.yml
+  - k8s/application/jwt-secret.yml
+  - k8s/application/prometheus-sm.yml
+  # monitoring prometheus
+  - k8s/monitoring/prometheus-cr.yml
+  - k8s/monitoring/prometheus-crd.yml
+  - k8s/monitoring/grafana.yml
+  - k8s/monitoring/grafana-dashboard.yml
+

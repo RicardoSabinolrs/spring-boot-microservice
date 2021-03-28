@@ -1,0 +1,10 @@
+version: '2'
+services:
+  traefik:
+    image: traefik:1.7.24
+    command: --web
+    ports:
+      - 80:80
+      - 28080:8080
+    volumes:
+      - ./traefik/traefik.toml:/etc/traefik/traefik.toml

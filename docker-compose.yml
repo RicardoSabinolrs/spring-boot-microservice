@@ -1,0 +1,40 @@
+version: '2'
+services:
+  sabinolabs:
+    image: sabinolabs
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+      - 'SPRING_PROFILES_ACTIVE=prod,swagger'
+      - MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED=true
+      - 'SPRING_DATASOURCE_URL=jdbc:postgresql://sabinolabs-postgresql:5432/sabinoLabs'
+      - SERVER_PORT=80
+  sabinolabs-postgresql:
+    image: 'postgres:12.3'
+    environment:
+      - POSTGRES_USER=sabinoLabs
+      - POSTGRES_PASSWORD=
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+  traefik:
+    extends:
+      file: docker/traefik/traefik.yml
+      service: traefik
+
+  prometheus:
+    extends:
+      file: prometheus.yml
+      service: prometheus
+
+  alertmanager:
+    extends:
+      file: prometheus.yml
+      service: alertmanager
+
+  grafana:
+    extends:
+      file: prometheus.yml
+      service: grafana
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
