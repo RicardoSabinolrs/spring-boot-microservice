@@ -9,7 +9,7 @@ resources:
   - k8s/application/deployment.yml
   - k8s/application/service.yml
   - k8s/application/postgresql.yml
-  - k8s/application/jwt-secret.yml
+  - k8s/application/secret.yml
   - k8s/application/prometheus-sm.yml
   # monitoring prometheus
   - k8s/monitoring/prometheus-cr.yml

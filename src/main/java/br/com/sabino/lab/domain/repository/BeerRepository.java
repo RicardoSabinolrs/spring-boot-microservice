@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  * Spring Data  repository for the Beer entity.
  */
 @Repository
-public interface BeerRepository extends JpaRepository<Beer, Long>, JpaSpecificationExecutor<Beer> {
+public interface BeerRepository extends JpaRepository<Beer, Long> {
 }

@@ -1,5 +1,7 @@
 spring:
   profiles:
+  # Uncomment the following line to enable tests against production database type rather than H2, using Testcontainers
+  #active: testcontainers
   application:
     name: sabinoLabs
   datasource:
@@ -56,12 +58,10 @@ server:
   port: 10344
   address: localhost
 
-
-application:
+jhipster:
   clientApp:
     name: 'sabinoLabsApp'
   logging:
-    # To test json console appender
     use-json-format: false
     logstash:
       enabled: false
@@ -72,7 +72,7 @@ application:
     authentication:
       jwt:
         # This token must be encoded using Base64 (you can type `echo 'secret-key'|base64` on your command line)
-        base64-secret: YzRiMzAxZjk1Mjg5MGQ4ZGI2YWIzOWUxYjI2Y2JiM2QwN2YzOWQ0YWFjMmFlYzM5YmE0NzM0N2EwMjE1MjNlYjQ2YzVjOTVmNTFiMjZlNDI3Y2YwZGQxYmNjNGNiOThmNmFmOTVkYTdmMWE2N2U5MmNlZDQwYzE4ZDI5MDZmMmM=
+        base64-secret: ZTdjZTE3ZWM0OTAzODIyNTk5NmU3ZDUwMmU4YzE5Yjg0NzA1OTI2OTM5MzM5ZjQyNmQxYzY5MDljYmYyOWQ1OWU0MWE3Njk4YjVjZmNmOGI2OWNlOGJjY2Y1MzY4NTJiNjc3NjI2OGFjYWE0YWE5NGY1MTY3YzRmYzdiM2NhYmE=
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
   metrics:

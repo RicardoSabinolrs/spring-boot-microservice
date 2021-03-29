@@ -1,13 +1,22 @@
 feign:
   hystrix:
     enabled: true
+  # client:
+  #     config:
+  #         default:
+  #             connectTimeout: 5000
+  #             readTimeout: 5000
 
+# See https://github.com/Netflix/Hystrix/wiki/Configuration
 hystrix:
   command:
     default:
       execution:
         isolation:
           strategy: SEMAPHORE
+          # See https://github.com/spring-cloud/spring-cloud-netflix/issues/1330
+          # thread:
+          #     timeoutInMilliseconds: 10000
   shareSecurityContext: true
 
 management:
@@ -27,10 +36,9 @@ management:
       mode: full
   health:
     mail:
-      enabled: false # When using the MailService, configure an SMTP server and set this to true
+      enabled: false
   metrics:
     export:
-      # Prometheus is the default metrics backend
       prometheus:
         enabled: true
         step: 60
@@ -70,7 +78,7 @@ spring:
       hibernate.jdbc.time_zone: UTC
       hibernate.id.new_generator_mappings: true
       hibernate.connection.provider_disables_autocommit: true
-      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_second_level_cache: true
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: false
       hibernate.jdbc.batch_size: 25
@@ -111,11 +119,23 @@ server:
         http-only: true
 
 info:
+  # Comma separated list of profiles that will trigger the ribbon to show
   display-ribbon-on-profiles: 'dev'
 
-application:
+
+jhipster:
   clientApp:
     name: 'sabinoLabsApp'
+  # By default CORS is disabled. Uncomment to enable.
+  # cors:
+  #     allowed-origins: "*"
+  #     allowed-methods: "*"
+  #     allowed-headers: "*"
+  #     exposed-headers: "Authorization,Link,X-Total-Count"
+  #     allow-credentials: true
+  #     max-age: 1800
+  mail:
+    from: sabinoLabs@localhost
   swagger:
     default-include-pattern: /api/.*
     title: sabinoLabs API

@@ -4,7 +4,6 @@ import br.com.sabino.lab.api.rest.errors.BadRequestAlertException;
 import br.com.sabino.lab.domain.entity.Beer;
 import br.com.sabino.lab.domain.service.BeerService;
 import br.com.sabino.lab.domain.service.dto.BeerDTO;
-
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -14,9 +13,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -39,11 +38,8 @@ public class BeerResource {
 
     private final BeerService beerService;
 
-    private final BeerQueryService beerQueryService;
-
-    public BeerResource(BeerService beerService, BeerQueryService beerQueryService) {
+    public BeerResource(BeerService beerService) {
         this.beerService = beerService;
-        this.beerQueryService = beerQueryService;
     }
 
     /**
@@ -77,13 +73,9 @@ public class BeerResource {
     @PutMapping("/beers")
     public ResponseEntity<BeerDTO> updateBeer(@RequestBody BeerDTO beerDTO) throws URISyntaxException {
         log.debug("REST request to update Beer : {}", beerDTO);
-        if (beerDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        BeerDTO result = beerService.save(beerDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, beerDTO.getId().toString()))
-            .body(result);
+            .body(beerService.save(beerDTO));
     }
 
     /**
@@ -94,23 +86,11 @@ public class BeerResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of beers in body.
      */
     @GetMapping("/beers")
-    public ResponseEntity<List<BeerDTO>> getAllBeers(BeerCriteria criteria, Pageable pageable) {
-        log.debug("REST request to get Beers by criteria: {}", criteria);
-        Page<BeerDTO> page = beerQueryService.findByCriteria(criteria, pageable);
+    public ResponseEntity<List<BeerDTO>> getAllBeers(Pageable pageable) {
+        log.debug("REST request to get a page of Beer2s");
+        Page<BeerDTO> page = beerService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
-    }
-
-    /**
-     * {@code GET  /beers/count} : count all the beers.
-     *
-     * @param criteria the criteria which the requested entities should match.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
-     */
-    @GetMapping("/beers/count")
-    public ResponseEntity<Long> countBeers(BeerCriteria criteria) {
-        log.debug("REST request to count Beers by criteria: {}", criteria);
-        return ResponseEntity.ok().body(beerQueryService.countByCriteria(criteria));
     }
 
     /**

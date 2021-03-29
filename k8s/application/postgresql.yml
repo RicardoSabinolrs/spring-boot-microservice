@@ -1,13 +1,4 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: sabinolabs-postgresql
-  namespace: sabino-labs
-  labels:
-    app: sabinolabs-postgresql
-type: Opaque
-data:
-  postgresql-password: Mzc3OGRjNjg1ODFhZTc4OWQ3NWU2MGFiNGQxZTJiNDEzMmZlNTY2ZTA1MGZlZWJhZjk0OGViZmQ0NzMw
+
 ---
 apiVersion: apps/v1
 kind: Deployment

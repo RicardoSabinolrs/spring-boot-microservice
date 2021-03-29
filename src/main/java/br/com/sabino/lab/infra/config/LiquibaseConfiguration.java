@@ -1,4 +1,4 @@
-package br.com.sabino.lab.infra.config;
+package br.com.sabino.lab.config;
 
 import io.github.jhipster.config.JHipsterConstants;
 import io.github.jhipster.config.liquibase.SpringLiquibaseUtil;
@@ -31,9 +31,11 @@ public class LiquibaseConfiguration {
 
     @Bean
     public SpringLiquibase liquibase(@Qualifier("taskExecutor") Executor executor,
-            @LiquibaseDataSource ObjectProvider<DataSource> liquibaseDataSource, LiquibaseProperties liquibaseProperties,
-            ObjectProvider<DataSource> dataSource, DataSourceProperties dataSourceProperties) {
+                                     @LiquibaseDataSource ObjectProvider<DataSource> liquibaseDataSource, LiquibaseProperties liquibaseProperties,
+                                     ObjectProvider<DataSource> dataSource, DataSourceProperties dataSourceProperties) {
 
+        // If you don't want Liquibase to start asynchronously, substitute by this:
+        // SpringLiquibase liquibase = SpringLiquibaseUtil.createSpringLiquibase(liquibaseDataSource.getIfAvailable(), liquibaseProperties, dataSource.getIfUnique(), dataSourceProperties);
         SpringLiquibase liquibase = SpringLiquibaseUtil.createAsyncSpringLiquibase(this.env, executor, liquibaseDataSource.getIfAvailable(), liquibaseProperties, dataSource.getIfUnique(), dataSourceProperties);
         liquibase.setChangeLog("classpath:config/liquibase/master.xml");
         liquibase.setContexts(liquibaseProperties.getContexts());
