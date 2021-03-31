@@ -58,10 +58,12 @@ server:
   port: 10344
   address: localhost
 
+
 jhipster:
   clientApp:
     name: 'sabinoLabsApp'
   logging:
+    # To test json console appender
     use-json-format: false
     logstash:
       enabled: false
@@ -72,7 +74,7 @@ jhipster:
     authentication:
       jwt:
         # This token must be encoded using Base64 (you can type `echo 'secret-key'|base64` on your command line)
-        base64-secret: ZTdjZTE3ZWM0OTAzODIyNTk5NmU3ZDUwMmU4YzE5Yjg0NzA1OTI2OTM5MzM5ZjQyNmQxYzY5MDljYmYyOWQ1OWU0MWE3Njk4YjVjZmNmOGI2OWNlOGJjY2Y1MzY4NTJiNjc3NjI2OGFjYWE0YWE5NGY1MTY3YzRmYzdiM2NhYmE=
+        base64-secret: ZGVlNzRjZTFmZWI3YjVkODc4MjE1OGM2YWI0MTIxYWVkMzExY2YwYzg4NTAwNzJlMGU4ZTUwZGNjZTEwZGMxNDZmNjNhNTc0NzQwMmViMTcwNGUzNTIyMzMxZjYyOTU4MDY4Y2IzMWZmNmIwMmNiM2RkOTQ3MDBhODk3NzI0MWM=
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
   metrics:

@@ -10,10 +10,9 @@ import java.io.Serializable;
  * A Beer.
  */
 @Entity
-@Builder
+@Setter
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "beer")
 public class Beer implements Serializable {
 
@@ -22,7 +21,6 @@ public class Beer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
-    @Setter
     private Long id;
     @Column(name = "name")
     private String name;

@@ -1,4 +1,4 @@
-package br.com.sabino.lab.api.rest;
+package br.com.sabino.lab.api.controller;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;

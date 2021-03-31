@@ -36,9 +36,10 @@ management:
       mode: full
   health:
     mail:
-      enabled: false
+      enabled: false # When using the MailService, configure an SMTP server and set this to true
   metrics:
     export:
+      # Prometheus is the default metrics backend
       prometheus:
         enabled: true
         step: 60
@@ -65,7 +66,10 @@ spring:
   application:
     name: sabinoLabs
   profiles:
-    active: dev
+    # The commented value for `active` can be replaced with valid Spring profiles to load.
+    # Otherwise, it will be filled in by gradle when building the JAR file
+    # Either way, it can be overridden by `--spring.profiles.active` value passed in the commandline or `-Dspring.profiles.active` set in `JAVA_OPTS`
+    active: #spring.profiles.active#
   jmx:
     enabled: false
   data:
@@ -78,9 +82,10 @@ spring:
       hibernate.jdbc.time_zone: UTC
       hibernate.id.new_generator_mappings: true
       hibernate.connection.provider_disables_autocommit: true
-      hibernate.cache.use_second_level_cache: true
+      hibernate.cache.use_second_level_cache: false
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: false
+      # modify batch size as necessary
       hibernate.jdbc.batch_size: 25
       hibernate.order_inserts: true
       hibernate.order_updates: true
@@ -118,10 +123,10 @@ server:
       cookie:
         http-only: true
 
+# Properties to be exposed on the /info management endpoint
 info:
   # Comma separated list of profiles that will trigger the ribbon to show
   display-ribbon-on-profiles: 'dev'
-
 
 jhipster:
   clientApp:

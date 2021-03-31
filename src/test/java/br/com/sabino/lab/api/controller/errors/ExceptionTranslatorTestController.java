@@ -1,4 +1,4 @@
-package br.com.sabino.lab.api.rest.errors;
+package br.com.sabino.lab.api.controller.errors;
 
 import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.http.HttpStatus;

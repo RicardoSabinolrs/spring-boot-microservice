@@ -17,7 +17,7 @@ public interface BeerMapper extends EntityMapper<BeerDTO, Beer> {
             return null;
         }
         Beer beer = new Beer();
-        beer.setId(id);
+//        beer.setId(id);
         return beer;
     }
 }

@@ -15,7 +15,6 @@ plugins {
     id "org.springframework.boot"
     id "com.google.cloud.tools.jib"
     id "com.gorylenko.gradle-git-properties"
-    id "org.openapi.generator"
     id "net.ltgt.apt-eclipse"
     id "net.ltgt.apt-idea"
     id "net.ltgt.apt"
@@ -29,13 +28,12 @@ version = "0.0.1-SNAPSHOT"
 
 description = ""
 
-sourceCompatibility=1.8
-targetCompatibility=1.8
-assert System.properties["java.specification.version"] == "1.8" || "11" || "12" || "13" || "14"
+sourceCompatibility = 14
+targetCompatibility = 14
+assert System.properties["java.specification.version"] == "14"
 
 apply from: "gradle/docker.gradle"
 apply from: "gradle/sonar.gradle"
-apply from: "gradle/swagger.gradle"
 
 if (project.hasProperty("prod") || project.hasProperty("gae")) {
     apply from: "gradle/profile_prod.gradle"
@@ -93,7 +91,6 @@ test {
     testLogging {
         events 'FAILED', 'SKIPPED'
     }
-
     reports.html.enabled = false
 }
 
@@ -119,6 +116,7 @@ task cucumberTest(type: Test) {
     description = "Execute cucumber BDD tests."
     group = "verification"
     include "**/*CucumberIT*"
+
     reports.html.enabled = false
 }
 
@@ -211,7 +209,6 @@ dependencies {
 
     implementation group: "io.github.jhipster", name: "jhipster-framework"
     implementation "javax.annotation:javax.annotation-api"
-    implementation "org.springframework.boot:spring-boot-starter-cache"
     implementation "io.dropwizard.metrics:metrics-core"
     implementation "io.micrometer:micrometer-registry-prometheus"
     implementation "net.logstash.logback:logstash-logback-encoder"
@@ -221,13 +218,9 @@ dependencies {
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-hibernate5"
     implementation "com.fasterxml.jackson.core:jackson-annotations"
     implementation "com.fasterxml.jackson.core:jackson-databind"
-    implementation "javax.cache:cache-api"
     implementation "org.hibernate:hibernate-core"
     implementation "com.zaxxer:HikariCP"
-    implementation "org.openapitools:jackson-databind-nullable:${jackson_databind_nullable_version}"
     implementation "javax.transaction:javax.transaction-api"
-    implementation "org.ehcache:ehcache"
-    implementation "org.hibernate:hibernate-jcache"
     implementation "org.hibernate:hibernate-entitymanager"
     implementation "org.hibernate.validator:hibernate-validator"
     implementation "org.liquibase:liquibase-core"
@@ -242,9 +235,11 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     testImplementation "org.testcontainers:postgresql"
     implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation ("org.springframework.boot:spring-boot-starter-web") {
+    implementation("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"
     }
+    implementation "org.projectlombok:lombok:${lombok_version}"
+    implementation "io.springfox:springfox-swagger-ui:${swagger_version}"
     implementation "org.springframework.boot:spring-boot-starter-undertow"
     implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
     implementation "org.zalando:problem-spring-web"
@@ -257,8 +252,8 @@ dependencies {
     implementation "org.springframework.security:spring-security-config"
     implementation "org.springframework.security:spring-security-data"
     implementation "org.springframework.security:spring-security-web"
-    implementation "org.projectlombok:lombok:${lombok_version}"
     implementation "io.jsonwebtoken:jjwt-api"
+
     if (!project.hasProperty("gae")) {
         runtimeOnly "io.jsonwebtoken:jjwt-impl"
         runtimeOnly "io.jsonwebtoken:jjwt-jackson"
@@ -266,7 +261,7 @@ dependencies {
         implementation "io.jsonwebtoken:jjwt-impl"
         implementation "io.jsonwebtoken:jjwt-jackson"
     }
-    implementation ("io.springfox:springfox-swagger2") {
+    implementation("io.springfox:springfox-swagger2") {
         exclude module: "mapstruct"
     }
     implementation "io.springfox:springfox-bean-validators"
@@ -277,11 +272,9 @@ dependencies {
     annotationProcessor "org.hibernate:hibernate-jpamodelgen:${hibernate_version}"
     annotationProcessor "org.glassfish.jaxb:jaxb-runtime:${jaxb_runtime_version}"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:${spring_boot_version}"
-    annotationProcessor "org.projectlombok:lombok:${lombok_version}"
     testImplementation "io.cucumber:cucumber-junit"
     testImplementation "io.cucumber:cucumber-spring"
-    testImplementation ("org.springframework.boot:spring-boot-starter-test") {
-    }
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework.security:spring-security-test"
     testImplementation "org.springframework.boot:spring-boot-test"
     testImplementation "com.tngtech.archunit:archunit-junit5-api:${archunit_junit5_version}"

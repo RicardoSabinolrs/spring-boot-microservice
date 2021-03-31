@@ -1,4 +1,4 @@
-package br.com.sabino.lab.api.rest.errors;
+package br.com.sabino.lab.api.controller.errors;
 
 import org.zalando.problem.AbstractThrowableProblem;
 import org.zalando.problem.Status;

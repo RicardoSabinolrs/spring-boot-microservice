@@ -1,6 +1,6 @@
-package br.com.sabino.lab.api.rest;
+package br.com.sabino.lab.api.controller;
 
-import br.com.sabino.lab.api.rest.errors.BadRequestAlertException;
+import br.com.sabino.lab.api.controller.errors.BadRequestAlertException;
 import br.com.sabino.lab.domain.entity.Beer;
 import br.com.sabino.lab.domain.service.BeerService;
 import br.com.sabino.lab.domain.service.dto.BeerDTO;
@@ -49,14 +49,14 @@ public class BeerResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new beerDTO, or with status {@code 400 (Bad Request)} if the beer has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/beers")
+    @PostMapping("/beer")
     public ResponseEntity<BeerDTO> createBeer(@RequestBody BeerDTO beerDTO) throws URISyntaxException {
         log.debug("REST request to save Beer : {}", beerDTO);
         if (beerDTO.getId() != null) {
             throw new BadRequestAlertException("A new beer cannot already have an ID", ENTITY_NAME, "idexists");
         }
         BeerDTO result = beerService.save(beerDTO);
-        return ResponseEntity.created(new URI("/api/beers/" + result.getId()))
+        return ResponseEntity.created(new URI("/api/beer/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
@@ -70,7 +70,7 @@ public class BeerResource {
      * or with status {@code 500 (Internal Server Error)} if the beerDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/beers")
+    @PutMapping("/beer")
     public ResponseEntity<BeerDTO> updateBeer(@RequestBody BeerDTO beerDTO) throws URISyntaxException {
         log.debug("REST request to update Beer : {}", beerDTO);
         return ResponseEntity.ok()
@@ -82,12 +82,11 @@ public class BeerResource {
      * {@code GET  /beers} : get all the beers.
      *
      * @param pageable the pagination information.
-     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of beers in body.
      */
-    @GetMapping("/beers")
+    @GetMapping("/beer")
     public ResponseEntity<List<BeerDTO>> getAllBeers(Pageable pageable) {
-        log.debug("REST request to get a page of Beer2s");
+        log.debug("REST request to get a page of Beer");
         Page<BeerDTO> page = beerService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
@@ -99,7 +98,7 @@ public class BeerResource {
      * @param id the id of the beerDTO to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the beerDTO, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/beers/{id}")
+    @GetMapping("/beer/{id}")
     public ResponseEntity<BeerDTO> getBeer(@PathVariable Long id) {
         log.debug("REST request to get Beer : {}", id);
         Optional<BeerDTO> beerDTO = beerService.findOne(id);
@@ -112,7 +111,7 @@ public class BeerResource {
      * @param id the id of the beerDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/beers/{id}")
+    @DeleteMapping("/beer/{id}")
     public ResponseEntity<Void> deleteBeer(@PathVariable Long id) {
         log.debug("REST request to delete Beer : {}", id);
         beerService.delete(id);

@@ -1,4 +1,4 @@
-package br.com.sabino.lab.api.rest;
+package br.com.sabino.lab.api.controller;
 
 import br.com.sabino.lab.SabinoLabsApp;
 import br.com.sabino.lab.domain.entity.Beer;
@@ -51,10 +51,10 @@ public class BeerResourceIT {
     private BeerRepository beerRepository;
 
     @Autowired
-    private BeerMapper BeerMapper;
+    private BeerMapper beerMapper;
 
     @Autowired
-    private BeerService BeerService;
+    private BeerService beerService;
 
     @Autowired
     private EntityManager entityManager;
@@ -62,7 +62,7 @@ public class BeerResourceIT {
     @Autowired
     private MockMvc restBeerMockMvc;
 
-    private Beer Beer;
+    private Beer beer;
 
     /**
      * Create an entity for this test.
@@ -71,39 +71,36 @@ public class BeerResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Beer createEntity(EntityManager em) {
-        Beer Beer = br.com.sabino.lab.domain.entity.Beer.builder()
-            .name(DEFAULT_NAME)
-            .ibu(DEFAULT_IBU)
-            .style(DEFAULT_STYLE)
-            .description(DEFAULT_DESCRIPTION)
-            .alcoholTenor(DEFAULT_ALCOHOL_TENOR)
-            .build();
+        Beer Beer = new Beer();
+        Beer.setName(DEFAULT_NAME);
+        Beer.setIbu(DEFAULT_IBU);
+        Beer.setStyle(DEFAULT_STYLE);
+        Beer.setDescription(DEFAULT_DESCRIPTION);
+        Beer.setAlcoholTenor(DEFAULT_ALCOHOL_TENOR);
         return Beer;
     }
 
+
     @BeforeEach
     public void initTest() {
-        this.Beer = createEntity(entityManager);
+        beer = createEntity(entityManager);
     }
 
     @Test
     @Transactional
     public void createBeer() throws Exception {
         int databaseSizeBeforeCreate = beerRepository.findAll().size();
-
         // Create the Beer
-        BeerDTO BeerDTO = BeerMapper.toDto(Beer);
-
+        BeerDTO beerDTO = beerMapper.toDto(beer);
         restBeerMockMvc.perform(post("/api/beer")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(BeerDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(beerDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Beer in the database
-        List<Beer> BeerList = beerRepository.findAll();
-        assertThat(BeerList).hasSize(databaseSizeBeforeCreate + 1);
-
-        Beer testBeer = BeerList.get(BeerList.size() - 1);
+        List<Beer> beerList = beerRepository.findAll();
+        assertThat(beerList).hasSize(databaseSizeBeforeCreate + 1);
+        Beer testBeer = beerList.get(beerList.size() - 1);
         assertThat(testBeer.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testBeer.getIbu()).isEqualTo(DEFAULT_IBU);
         assertThat(testBeer.getStyle()).isEqualTo(DEFAULT_STYLE);
@@ -117,18 +114,18 @@ public class BeerResourceIT {
         int databaseSizeBeforeCreate = beerRepository.findAll().size();
 
         // Create the Beer with an existing ID
-        Beer.setId(1L);
-        BeerDTO BeerDTO = BeerMapper.toDto(Beer);
+        beer.setId(1L);
+        BeerDTO beerDTO = beerMapper.toDto(beer);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restBeerMockMvc.perform(post("/api/beer")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(BeerDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(beerDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Beer in the database
-        List<Beer> BeerList = beerRepository.findAll();
-        assertThat(BeerList).hasSize(databaseSizeBeforeCreate);
+        List<Beer> beerList = beerRepository.findAll();
+        assertThat(beerList).hasSize(databaseSizeBeforeCreate);
     }
 
 
@@ -136,13 +133,13 @@ public class BeerResourceIT {
     @Transactional
     public void getAllBeers() throws Exception {
         // Initialize the database
-        beerRepository.saveAndFlush(Beer);
+        beerRepository.saveAndFlush(beer);
 
-        // Get all the BeerList
+        // Get all the beerList
         restBeerMockMvc.perform(get("/api/beer?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(Beer.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(beer.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].ibu").value(hasItem(DEFAULT_IBU)))
             .andExpect(jsonPath("$.[*].style").value(hasItem(DEFAULT_STYLE)))
@@ -154,13 +151,13 @@ public class BeerResourceIT {
     @Transactional
     public void getBeer() throws Exception {
         // Initialize the database
-        beerRepository.saveAndFlush(Beer);
+        beerRepository.saveAndFlush(beer);
 
-        // Get the Beer
-        restBeerMockMvc.perform(get("/api/beer/{id}", Beer.getId()))
+        // Get the beer
+        restBeerMockMvc.perform(get("/api/beer/{id}", beer.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(Beer.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(beer.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.ibu").value(DEFAULT_IBU))
             .andExpect(jsonPath("$.style").value(DEFAULT_STYLE))
@@ -170,7 +167,7 @@ public class BeerResourceIT {
     @Test
     @Transactional
     public void getNonExistingBeer() throws Exception {
-        // Get the Beer
+        // Get the beer
         restBeerMockMvc.perform(get("/api/beer/{id}", Long.MAX_VALUE))
             .andExpect(status().isNotFound());
     }
@@ -179,32 +176,30 @@ public class BeerResourceIT {
     @Transactional
     public void updateBeer() throws Exception {
         // Initialize the database
-        beerRepository.saveAndFlush(Beer);
+        beerRepository.saveAndFlush(beer);
 
         int databaseSizeBeforeUpdate = beerRepository.findAll().size();
 
-        // Update the Beer
-        Beer updatedBeer = beerRepository.findById(Beer.getId()).get();
+        // Update the beer
+        Beer updatedBeer = beerRepository.findById(beer.getId()).get();
         // Disconnect from session so that the updates on updatedBeer are not directly saved in db
         entityManager.detach(updatedBeer);
-        updatedBeer = br.com.sabino.lab.domain.entity.Beer.builder()
-            .name(UPDATED_NAME)
-            .ibu(UPDATED_IBU)
-            .style(UPDATED_STYLE)
-            .description(UPDATED_DESCRIPTION)
-            .alcoholTenor(UPDATED_ALCOHOL_TENOR)
-            .build();
-        BeerDTO BeerDTO = BeerMapper.toDto(updatedBeer);
+        updatedBeer.setName(UPDATED_NAME);
+        updatedBeer.setIbu(UPDATED_IBU);
+        updatedBeer.setStyle(UPDATED_STYLE);
+        updatedBeer.setDescription(UPDATED_DESCRIPTION);
+        updatedBeer.setAlcoholTenor(UPDATED_ALCOHOL_TENOR);
+        BeerDTO beerDTO = beerMapper.toDto(updatedBeer);
 
         restBeerMockMvc.perform(put("/api/beer")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(BeerDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(beerDTO)))
             .andExpect(status().isOk());
 
         // Validate the Beer in the database
-        List<Beer> BeerList = beerRepository.findAll();
-        assertThat(BeerList).hasSize(databaseSizeBeforeUpdate);
-        Beer testBeer = BeerList.get(BeerList.size() - 1);
+        List<Beer> beerList = beerRepository.findAll();
+        assertThat(beerList).hasSize(databaseSizeBeforeUpdate);
+        Beer testBeer = beerList.get(beerList.size() - 1);
         assertThat(testBeer.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testBeer.getIbu()).isEqualTo(UPDATED_IBU);
         assertThat(testBeer.getStyle()).isEqualTo(UPDATED_STYLE);
@@ -218,34 +213,34 @@ public class BeerResourceIT {
         int databaseSizeBeforeUpdate = beerRepository.findAll().size();
 
         // Create the Beer
-        BeerDTO BeerDTO = BeerMapper.toDto(Beer);
+        BeerDTO beerDTO = beerMapper.toDto(beer);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restBeerMockMvc.perform(put("/api/beer")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(BeerDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(beerDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Beer in the database
-        List<Beer> BeerList = beerRepository.findAll();
-        assertThat(BeerList).hasSize(databaseSizeBeforeUpdate);
+        List<Beer> beerList = beerRepository.findAll();
+        assertThat(beerList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
     @Transactional
     public void deleteBeer() throws Exception {
         // Initialize the database
-        beerRepository.saveAndFlush(Beer);
+        beerRepository.saveAndFlush(beer);
 
         int databaseSizeBeforeDelete = beerRepository.findAll().size();
 
-        // Delete the Beer
-        restBeerMockMvc.perform(delete("/api/beer/{id}", Beer.getId())
+        // Delete the beer
+        restBeerMockMvc.perform(delete("/api/beer/{id}", beer.getId())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<Beer> BeerList = beerRepository.findAll();
-        assertThat(BeerList).hasSize(databaseSizeBeforeDelete - 1);
+        List<Beer> beerList = beerRepository.findAll();
+        assertThat(beerList).hasSize(databaseSizeBeforeDelete - 1);
     }
 }
