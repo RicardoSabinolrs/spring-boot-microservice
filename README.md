@@ -10,8 +10,6 @@ To start your application in the dev profile, run:
 ./mvnw
 ```
 
-For further instructions on how to develop with JHipster, have a look at [Using JHipster in development][].
-
 ## Building for production
 
 ### Packaging as jar
@@ -46,7 +44,7 @@ To launch your application's tests, run:
 
 ### Other tests
 
-Performance tests are run by [Gatling][] and written in Scala. They're located in [src/test/gatling](src/test/gatling).
+Performance tests are run by Gatling and written in Scala. They're located in [src/test/gatling](src/test/gatling).
 
 To use those tests, you must install Gatling from [https://gatling.io/](https://gatling.io/).
 
