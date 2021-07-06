@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: sabinolabs-virtualservice
+  namespace: sabino-labs
+spec:
+  hosts:
+    - sabinolabs
+  http:
+    - route:
+        - destination:
+            host: sabinolabs
+            subset: 'v1'
+          weight: 100
+      retries:
+        attempts: 3
+        perTryTimeout: 2s

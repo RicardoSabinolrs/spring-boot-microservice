@@ -1,0 +1,39 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: grafana-gateway
+  namespace: sabino-labs
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - grafana.sabino-labs.sabino.labs
+    - port:
+        number: 80
+        name: http2
+        protocol: HTTP2
+      hosts:
+        - grafana.sabino-labs.sabino.labs
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: grafana-gw-virtualservice
+  namespace: sabino-labs
+spec:
+  hosts:
+    - grafana.sabino-labs.sabino.labs
+  gateways:
+    - grafana-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: grafana
