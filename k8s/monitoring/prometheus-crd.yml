@@ -1,7 +1,7 @@
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: prometheus-operator-cr
+  name: jhipster-prometheus-operator-cr
 rules:
   - apiGroups:
       - extensions
@@ -28,37 +28,35 @@ rules:
       - apps
     resources:
       - statefulsets
-    verbs: [ '*' ]
-  - apiGroups: [ '' ]
+    verbs: ['*']
+  - apiGroups: ['']
     resources:
       - configmaps
       - secrets
-    verbs: [ '*' ]
-  - apiGroups: [ '' ]
+    verbs: ['*']
+  - apiGroups: ['']
     resources:
       - pods
-    verbs: [ 'list', 'delete' ]
-  - apiGroups: [ '' ]
+    verbs: ['list', 'delete']
+  - apiGroups: ['']
     resources:
       - services
       - endpoints
-    verbs: [ 'get', 'create', 'update' ]
-  - apiGroups: [ '' ]
+    verbs: ['get', 'create', 'update']
+  - apiGroups: ['']
     resources:
       - nodes
-    verbs: [ 'list', 'watch' ]
-  - apiGroups: [ '' ]
+    verbs: ['list', 'watch']
+  - apiGroups: ['']
     resources:
       - namespaces
-    verbs: [ 'list', 'watch' ]
-
+    verbs: ['list', 'watch']
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: prometheus-operator-sa
   namespace: sabino-labs
-
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -73,7 +71,6 @@ subjects:
   - kind: ServiceAccount
     name: prometheus-operator-sa
     namespace: sabino-labs
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -91,12 +88,14 @@ spec:
     metadata:
       labels:
         k8s-app: prometheus-operator
+      annotations:
+        sidecar.istio.io/inject: 'false'
     spec:
       containers:
         - args:
             - --kubelet-service=kube-system/kubelet
             - --config-reloader-image=quay.io/coreos/configmap-reload:v0.0.1
-          image: quay.io/coreos/prometheus-operator:v0.39.0
+          image: quay.io/coreos/prometheus-operator:v0.42.1
           name: prometheus-operator
           ports:
             - containerPort: 8080

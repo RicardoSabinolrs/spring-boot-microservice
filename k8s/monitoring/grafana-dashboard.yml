@@ -2280,7 +2280,6 @@ data:
         "type": "prometheus",
         "url": "http://prometheus:9090"
     }
-
 ---
 apiVersion: batch/v1
 kind: Job
@@ -2294,6 +2293,8 @@ spec:
     metadata:
       labels:
         job: grafana-dashboard
+      annotations:
+        sidecar.istio.io/inject: 'false'
     spec:
       initContainers:
         - name: init-dependent-services-check

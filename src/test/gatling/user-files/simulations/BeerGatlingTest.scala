@@ -12,12 +12,8 @@ import scala.concurrent.duration._
 class BeerGatlingTest extends Simulation {
 
     val context: LoggerContext = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
-    // Log all HTTP requests
-    //context.getLogger("io.gatling.http").setLevel(Level.valueOf("TRACE"))
-    // Log failed HTTP requests
-    //context.getLogger("io.gatling.http").setLevel(Level.valueOf("DEBUG"))
 
-    val baseURL = Option(System.getProperty("baseURL")) getOrElse """http://localhost:8080"""
+    val baseURL = Option(System.getProperty("baseURL")) getOrElse """http://localhost:8081"""
 
     val httpConf = http
         .baseUrl(baseURL)
@@ -71,8 +67,7 @@ class BeerGatlingTest extends Simulation {
             .post("/services/sabinolabs/api/beers")
             .headers(headers_http_authenticated)
             .body(StringBody("""{
-                "id":null
-                , "name":"SAMPLE_TEXT"
+                "name":"SAMPLE_TEXT"
                 , "ibu":"SAMPLE_TEXT"
                 , "style":"SAMPLE_TEXT"
                 , "description":"SAMPLE_TEXT"

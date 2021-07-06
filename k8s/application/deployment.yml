@@ -36,7 +36,7 @@ spec:
             - |
               while true
               do
-                rt=$(nc -z -w 1 sabinolabs-postgresql 5432)
+                rt=$(nc -z -w 1 sabinolabs-mongodb 27017)
                 if [ $? -eq 0 ]; then
                   echo "DB is UP"
                   break
@@ -46,7 +46,7 @@ spec:
               done
       containers:
         - name: sabinolabs-app
-          image: sabinoLabsRepo/sabinolabs
+          image: sabinolabs
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: prod
@@ -55,23 +55,18 @@ spec:
                 secretKeyRef:
                   name: jwt-secret
                   key: secret
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://sabinolabs-postgresql.sabino-labs.svc.cluster.local:5432/sabinoLabs
-            - name: SPRING_DATASOURCE_USERNAME
-              value: sabinoLabs
-            - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: sabinolabs-postgresql
-                  key: postgresql-password
+            - name: SPRING_DATA_MONGODB_DATABASE
+              value: SabinoLabs
+            - name: SPRING_DATA_MONGODB_URI
+              value: 'mongodb://sabinolabs-mongodb-0.sabinolabs-mongodb.sabino-labs:27017,sabinolabs-mongodb-1.sabinolabs-mongodb.sabino-labs:27017,sabinolabs-mongodb-2.sabinolabs-mongodb.sabino-labs:27017'
             - name: MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED
               value: 'true'
-            - name: JHIPSTER_METRICS_PROMETHEUS_ENDPOINT
-              value: /prometheusMetrics
             - name: SPRING_SLEUTH_PROPAGATION_KEYS
               value: 'x-request-id,x-ot-span-context'
             - name: JAVA_OPTS
               value: ' -Xmx256m -Xms256m'
+            - name: SERVER_SHUTDOWN
+              value: graceful
           resources:
             requests:
               memory: '512Mi'
@@ -84,13 +79,13 @@ spec:
               containerPort: 8081
           readinessProbe:
             httpGet:
-              path: /management/health
+              path: /management/health/readiness
               port: http
             initialDelaySeconds: 20
             periodSeconds: 15
             failureThreshold: 6
           livenessProbe:
             httpGet:
-              path: /management/health
+              path: /management/health/liveness
               port: http
             initialDelaySeconds: 120

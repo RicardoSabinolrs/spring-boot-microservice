@@ -1,19 +1,75 @@
 commonLabels:
-  app.kubernetes.io/genereted-by: SabinoLabs
+  app.kubernetes.io/genereted-by: JHipster
 
 namespace: sabino-labs
 
 resources:
-  - k8s/application/namespace.yml
+  - k8s/namespace.yml
   # Individual apps
   - k8s/application/deployment.yml
   - k8s/application/service.yml
-  - k8s/application/postgresql.yml
-  - k8s/application/secret.yml
+  - k8s/application/mongodb.yml
+  - k8s/application/jwt-secret.yml
   - k8s/application/prometheus-sm.yml
+  - k8s/application/destination-rule.yml
+  - k8s/application/virtual-service.yml
   # monitoring prometheus
   - k8s/monitoring/prometheus-cr.yml
   - k8s/monitoring/prometheus-crd.yml
   - k8s/monitoring/grafana.yml
   - k8s/monitoring/grafana-dashboard.yml
+  - k8s/monitoring/grafana-gateway.yml
+  # service discovery eureka/consul
+  # istio
+  - k8s/istio/grafana-gateway.yml
+  - k8s/istio/zipkin-gateway.yml
+  - k8s/istio/kiali-gateway.yml
 
+patchesJson6902:
+  - target:
+      version: v1
+      kind: Namespace
+      name: sabino-labs
+    path: k8s/istio/patch/istio-label.yml
+  - target:
+      group: networking.istio.io
+      version: v1alpha3
+      kind: Gateway
+      name: grafana-observability-gateway
+      namespace: sabino-labs
+    path: k8s/istio/patch/istio-namespace.yml
+  - target:
+      group: networking.istio.io
+      version: v1alpha3
+      name: grafana-gw-virtualservice
+      kind: VirtualService
+      namespace: sabino-labs
+    path: k8s/istio/patch/istio-namespace.yml
+  - target:
+      group: networking.istio.io
+      version: v1alpha3
+      kind: Gateway
+      name: kiali-observability-gateway
+      namespace: sabino-labs
+    path: k8s/istio/patch/istio-namespace.yml
+  - target:
+      group: networking.istio.io
+      version: v1alpha3
+      name: kiali-gw-virtualservice
+      kind: VirtualService
+      namespace: sabino-labs
+    path: k8s/istio/patch/istio-namespace.yml
+  - target:
+      group: networking.istio.io
+      version: v1alpha3
+      kind: Gateway
+      name: zipkin-observability-gateway
+      namespace: sabino-labs
+    path: k8s/istio/patch/istio-namespace.yml
+  - target:
+      group: networking.istio.io
+      version: v1alpha3
+      name: zipkin-gw-virtualservice
+      kind: VirtualService
+      namespace: sabino-labs
+    path: k8s/istio/patch/istio-namespace.yml

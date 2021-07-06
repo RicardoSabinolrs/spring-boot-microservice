@@ -1,4 +1,3 @@
-# Sample global config for monitoring JHipster applications
 global:
   scrape_interval: 15s # By default, scrape targets every 15 seconds.
   evaluation_interval: 15s # By default, scrape targets every 15 seconds.
@@ -24,7 +23,7 @@ scrape_configs:
     #basic_auth:
     # username: admin
     # password: admin
-    metrics_path: /services/sabinoLabs/management/prometheus
+    metrics_path: /services/SabinoLabs/management/prometheus
     static_configs:
       - targets:
           # On MacOS, replace localhost by host.docker.internal

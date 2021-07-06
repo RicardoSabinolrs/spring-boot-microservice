@@ -2,7 +2,7 @@ apiVersion: skaffold/v1
 kind: Config
 build:
   artifacts:
-    - image: sabinoLabsRepo/sabinolabs
+    - image: sabinolabs
       context: ../spring-boot-microservice
       jib: {}
   tagPolicy:

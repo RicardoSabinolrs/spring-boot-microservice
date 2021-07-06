@@ -1,47 +1,24 @@
 logging:
   level:
     ROOT: DEBUG
-    io.github.jhipster: DEBUG
-    br.com.sabino.lab: DEBUG
+    tech.jhipster: DEBUG
+    org.hibernate.SQL: DEBUG
+    br.com.sabino.labs: DEBUG
 
 spring:
-  profiles:
-    active: dev
-    include:
-      - swagger
-      # Uncomment to activate TLS for the dev profile
-      #- tls
   devtools:
     restart:
       enabled: true
-      additional-exclude: static/**,.h2.server.properties
+      additional-exclude: static/**
     livereload:
       enabled: false # we use Webpack dev server + BrowserSync for livereload
   jackson:
     serialization:
       indent-output: true
-  datasource:
-    type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:h2:mem:sabinolabs;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    username: sabinoLabs
-    password:
-    hikari:
-      poolName: Hikari
-      auto-commit: false
-  h2:
-    console:
-      enabled: false
-  jpa:
-    database-platform: io.github.jhipster.domain.util.FixedH2Dialect
-    show-sql: true
-  liquibase:
-    # Remove 'faker' if you do not want the sample data to be loaded automatically
-    contexts: dev, faker
-  mail:
-    host: localhost
-    port: 25
-    username:
-    password:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+      database: SabinoLabs
   messages:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
   thymeleaf:
@@ -59,31 +36,31 @@ spring:
 server:
   port: 8081
 
-
 jhipster:
+  cache: # Cache configuration
+    redis: # Redis configuration
+      expiration: 3600 # By default objects stay 1 hour (in seconds) in the cache
+      server: redis://localhost:6379
+      cluster: false
+      # server: redis://localhost:6379,redis://localhost:16379,redis://localhost:26379
+      # cluster: true
   # CORS is disabled by default on microservices, as you should access them through a gateway.
   # If you want to enable it, please uncomment the configuration below.
   # cors:
-  #     allowed-origins: "*"
-  #     allowed-methods: "*"
-  #     allowed-headers: "*"
-  #     exposed-headers: "Authorization,Link,X-Total-Count"
-  #     allow-credentials: true
-  #     max-age: 1800
+  #   allowed-origins: "http://localhost:9000"
+  #   allowed-methods: "*"
+  #   allowed-headers: "*"
+  #   exposed-headers: "Authorization,Link,X-Total-Count"
+  #   allow-credentials: true
+  #   max-age: 1800
   security:
     authentication:
       jwt:
         # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
-        base64-secret: ZGVlNzRjZTFmZWI3YjVkODc4MjE1OGM2YWI0MTIxYWVkMzExY2YwYzg4NTAwNzJlMGU4ZTUwZGNjZTEwZGMxNDZmNjNhNTc0NzQwMmViMTcwNGUzNTIyMzMxZjYyOTU4MDY4Y2IzMWZmNmIwMmNiM2RkOTQ3MDBhODk3NzI0MWM=
+        base64-secret: ZWMyMjA0MDk5ZmE2ZWRjNGUxZmRiMmM3NzA2YjA1NTgwNTQ3ZTk4Y2U5M2ViNDBlMzU3N2ZiMmVlMDFlNmQzMjAzNzBlZjg5ZTRkMjM3ZTdkNWQyOWM1YjUzNzQ5MDVhMTBlYjJjZGJjNDBiMjQ2N2Q4MzVjYThkYjAwYjRlODA=
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
         token-validity-in-seconds-for-remember-me: 2592000
-  mail: # specific JHipster mail property, for standard properties see MailProperties
-    base-url: http://127.0.0.1:8081
-  metrics:
-    logs: # Reports metrics in the logs
-      enabled: false
-      report-frequency: 60 # in seconds
   logging:
     use-json-format: false # By default, logs are not in Json format
     logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
@@ -91,5 +68,4 @@ jhipster:
       host: localhost
       port: 5000
       queue-size: 512
-  audit-events:
-    retention-period: 30 # Number of days before audit events are deleted.
+

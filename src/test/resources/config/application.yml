@@ -1,39 +1,22 @@
+mongock:
+  change-logs-scan-package:
+    - br.com.sabino.labs.infra.config.dbmigrations
+  mongo-db:
+    read-concern: local
+    write-concern:
+      journal: false
+
 spring:
-  profiles:
-  # Uncomment the following line to enable tests against production database type rather than H2, using Testcontainers
-  #active: testcontainers
   application:
-    name: sabinoLabs
-  datasource:
-    type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:h2:mem:sabinoLabs;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    name:
-    username:
-    password:
-    hikari:
-      auto-commit: false
+    name: SabinoLabs
   jackson:
     serialization:
       write-durations-as-timestamps: false
-  jpa:
-    database-platform: io.github.jhipster.domain.util.FixedH2Dialect
-    open-in-view: false
-    show-sql: false
-    hibernate:
-      ddl-auto: none
-      naming:
-        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
-        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
-    properties:
-      hibernate.id.new_generator_mappings: true
-      hibernate.connection.provider_disables_autocommit: true
-      hibernate.cache.use_second_level_cache: false
-      hibernate.cache.use_query_cache: false
-      hibernate.generate_statistics: false
-      hibernate.hbm2ddl.auto: validate
-      hibernate.jdbc.time_zone: UTC
-  liquibase:
-    contexts: test
+  data:
+    mongodb:
+      host: localhost
+      port: 0
+      database: SabinoLabs
   mail:
     host: localhost
   main:
@@ -58,7 +41,6 @@ server:
   port: 10344
   address: localhost
 
-
 jhipster:
   clientApp:
     name: 'sabinoLabsApp'
@@ -74,10 +56,6 @@ jhipster:
     authentication:
       jwt:
         # This token must be encoded using Base64 (you can type `echo 'secret-key'|base64` on your command line)
-        base64-secret: ZGVlNzRjZTFmZWI3YjVkODc4MjE1OGM2YWI0MTIxYWVkMzExY2YwYzg4NTAwNzJlMGU4ZTUwZGNjZTEwZGMxNDZmNjNhNTc0NzQwMmViMTcwNGUzNTIyMzMxZjYyOTU4MDY4Y2IzMWZmNmIwMmNiM2RkOTQ3MDBhODk3NzI0MWM=
+        base64-secret: ZWMyMjA0MDk5ZmE2ZWRjNGUxZmRiMmM3NzA2YjA1NTgwNTQ3ZTk4Y2U5M2ViNDBlMzU3N2ZiMmVlMDFlNmQzMjAzNzBlZjg5ZTRkMjM3ZTdkNWQyOWM1YjUzNzQ5MDVhMTBlYjJjZGJjNDBiMjQ2N2Q4MzVjYThkYjAwYjRlODA=
         # Token is valid 24 hours
         token-validity-in-seconds: 86400
-  metrics:
-    logs: # Reports metrics in the logs
-      enabled: true
-      report-frequency: 60 # in seconds

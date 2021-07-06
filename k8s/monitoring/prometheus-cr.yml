@@ -1,11 +1,10 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: prometheus-sa
+  name: jhipster-prometheus-sa
   namespace: sabino-labs
-
 ---
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
   name: prometheus-role
@@ -22,9 +21,9 @@ rules:
     resources:
       - configmaps
     verbs: ['get']
-
 ---
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.k8s.io/v1beta1
+# limit to the namespace
 kind: RoleBinding
 metadata:
   name: prometheus-rb
@@ -36,7 +35,6 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: prometheus-sa
-
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
@@ -44,7 +42,7 @@ metadata:
   name: prometheus
   namespace: sabino-labs
 spec:
-  replica: 1
+  replicas: 1
   serviceAccountName: prometheus-sa
   serviceMonitorSelector:
     matchLabels:
@@ -52,7 +50,6 @@ spec:
   resources:
     requests:
       memory: 400Mi
-
 ---
 apiVersion: v1
 kind: Service
