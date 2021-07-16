@@ -1,6 +1,6 @@
 # SabinoLabs
 
-This is a "microservice" application intended to be part of a microservice architecture.
+This repository is intended to be part of a reference architecture for microservices with Spring Boot.
 
 ## Development
 
